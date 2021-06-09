@@ -1,0 +1,584 @@
+{
+	"sdk": 3,
+	"version": 100,
+	"name": "LGKeys TouchPortal Plugin",
+	"id": "us.wdg.max.tpp.lgk",
+	"configuration": {
+		"colorDark": "#133555",
+		"colorLight": "#3078bc"
+	},
+	"plugin_start_cmd": "python %TP_PLUGIN_FOLDER%/LGKeys/main.py -l %TP_PLUGIN_FOLDER%/LGKeys/lgkeys.log --tpstart",
+	"settings": [
+		{
+			"name": "Profiles Directory",
+			"type": "text",
+			"default": "",
+			"readOnly": true
+		},
+		{
+			"name": "Device Type(s)",
+			"type": "text",
+			"default": "Keyboard",
+			"readOnly": false
+		},
+		{
+			"name": "Unmapped Button Text",
+			"type": "text",
+			"default": "...",
+			"readOnly": false
+		},
+		{
+			"name": "Profile Change Poll Interval (ms)",
+			"type": "number",
+			"default": "1000",
+			"minValue": 0,
+			"readOnly": false
+		},
+		{
+			"name": "Auto-switch Profiles",
+			"type": "number",
+			"default": "1",
+			"minValue": 0,
+			"maxValue": 1,
+			"readOnly": true
+		},
+		{
+			"name": "Last Active Profile",
+			"type": "text",
+			"default": "",
+			"readOnly": true
+		}
+	],
+	"categories": [
+		{
+			"id": "us.wdg.max.tpp.lgk.BaseCategory",
+			"name": "LGKeys",
+			"imagepath": "%TP_PLUGIN_FOLDER%/LGKeys/images/icon-24.png",
+			"actions": [
+				{
+					"id": "us.wdg.max.tpp.lgk.act.switchProfile",
+					"prefix": "LGKeys",
+					"name": "Switch Profile",
+					"format": "Switch profile to: {$us.wdg.max.tpp.lgk.act.switchProfile.profileName$}",
+					"type": "communicate",
+					"tryInline": true,
+					"data": [
+						{
+							"id": "us.wdg.max.tpp.lgk.act.switchProfile.profileName",
+							"type": "choice",
+							"label": "inputs",
+							"default": "Default",
+							"valueChoices": ["Default"]
+						}
+					]
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.act.autoSwitch",
+					"prefix": "LGKeys",
+					"name": "Profile Auto-switch Toggle",
+					"format": "Toggle Auto-switch",
+					"type": "communicate",
+					"tryInline": true,
+					"data": [
+						{
+							"id": "us.wdg.max.tpp.lgk.act.autoSwitch.trig",
+							"type": "switch",
+							"label": "Trigger",
+							"default": true
+						}
+					]
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.act.memToggle",
+					"prefix": "LGKeys",
+					"name": "Switch Memory Slot",
+					"format": "Set memory slot to {$us.wdg.max.tpp.lgk.act.memToggle.memSlot$}",
+					"type": "communicate",
+					"tryInline": true,
+					"data": [
+						{
+							"id": "us.wdg.max.tpp.lgk.act.memToggle.memSlot",
+							"type": "choice",
+							"label": "inputs",
+							"default": "1",
+							"valueChoices": ["1", "2", "3"]
+						}
+					]
+				}
+			],
+			"states": [
+				{
+					"id": "us.wdg.max.tpp.lgk.state.currentProfileName",
+					"type": "text",
+					"desc": "Name of currently active LGS profile.",
+					"default": "Default Profile"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.autoSwitch",
+					"type": "choice",
+					"desc": "Profiles auto-switch state",
+					"default": "Enabled",
+					"valueChoices": ["Disabled", "Enabled"]
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.memorySlot",
+					"type": "choice",
+					"desc": "GKey Memory Slot",
+					"default": "1",
+					"valueChoices": ["1", "2", "3"]
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G1",
+					"type": "text",
+					"desc": "GKey G1 (current M slot)",
+					"default": "G1"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G1M1",
+					"type": "text",
+					"desc": "GKey G1-M1",
+					"default": "G1"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G1M2",
+					"type": "text",
+					"desc": "GKey G1-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G1M3",
+					"type": "text",
+					"desc": "GKey G1-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G2",
+					"type": "text",
+					"desc": "GKey G2 (current M slot)",
+					"default": "G2"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G2M1",
+					"type": "text",
+					"desc": "GKey G2-M1",
+					"default": "G2"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G2M2",
+					"type": "text",
+					"desc": "GKey G2-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G2M3",
+					"type": "text",
+					"desc": "GKey G2-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G3",
+					"type": "text",
+					"desc": "GKey G3 (current M slot)",
+					"default": "G3"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G3M1",
+					"type": "text",
+					"desc": "GKey G3-M1",
+					"default": "G3"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G3M2",
+					"type": "text",
+					"desc": "GKey G3-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G3M3",
+					"type": "text",
+					"desc": "GKey G3-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G4",
+					"type": "text",
+					"desc": "GKey G4 (current M slot)",
+					"default": "G4"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G4M1",
+					"type": "text",
+					"desc": "GKey G4-M1",
+					"default": "G4"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G4M2",
+					"type": "text",
+					"desc": "GKey G4-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G4M3",
+					"type": "text",
+					"desc": "GKey G4-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G5",
+					"type": "text",
+					"desc": "GKey G5 (current M slot)",
+					"default": "G5"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G5M1",
+					"type": "text",
+					"desc": "GKey G5-M1",
+					"default": "G5"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G5M2",
+					"type": "text",
+					"desc": "GKey G5-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G5M3",
+					"type": "text",
+					"desc": "GKey G5-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G6",
+					"type": "text",
+					"desc": "GKey G6 (current M slot)",
+					"default": "G6"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G6M1",
+					"type": "text",
+					"desc": "GKey G6-M1",
+					"default": "G6"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G6M2",
+					"type": "text",
+					"desc": "GKey G6-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G6M3",
+					"type": "text",
+					"desc": "GKey G6-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G7",
+					"type": "text",
+					"desc": "GKey G7 (current M slot)",
+					"default": "G7"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G7M1",
+					"type": "text",
+					"desc": "GKey G7-M1",
+					"default": "G7"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G7M2",
+					"type": "text",
+					"desc": "GKey G7-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G7M3",
+					"type": "text",
+					"desc": "GKey G7-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G8",
+					"type": "text",
+					"desc": "GKey G8 (current M slot)",
+					"default": "G8"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G8M1",
+					"type": "text",
+					"desc": "GKey G8-M1",
+					"default": "G8"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G8M2",
+					"type": "text",
+					"desc": "GKey G8-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G8M3",
+					"type": "text",
+					"desc": "GKey G8-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G9",
+					"type": "text",
+					"desc": "GKey G9 (current M slot)",
+					"default": "G9"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G9M1",
+					"type": "text",
+					"desc": "GKey G9-M1",
+					"default": "G9"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G9M2",
+					"type": "text",
+					"desc": "GKey G9-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G9M3",
+					"type": "text",
+					"desc": "GKey G9-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G10",
+					"type": "text",
+					"desc": "GKey G10 (current M slot)",
+					"default": "G10"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G10M1",
+					"type": "text",
+					"desc": "GKey G10-M1",
+					"default": "G10"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G10M2",
+					"type": "text",
+					"desc": "GKey G10-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G10M3",
+					"type": "text",
+					"desc": "GKey G10-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G11",
+					"type": "text",
+					"desc": "GKey G11 (current M slot)",
+					"default": "G11"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G11M1",
+					"type": "text",
+					"desc": "GKey G11-M1",
+					"default": "G11"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G11M2",
+					"type": "text",
+					"desc": "GKey G11-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G11M3",
+					"type": "text",
+					"desc": "GKey G11-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G12",
+					"type": "text",
+					"desc": "GKey G12 (current M slot)",
+					"default": "G12"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G12M1",
+					"type": "text",
+					"desc": "GKey G12-M1",
+					"default": "G12"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G12M2",
+					"type": "text",
+					"desc": "GKey G12-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G12M3",
+					"type": "text",
+					"desc": "GKey G12-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G13",
+					"type": "text",
+					"desc": "GKey G13 (current M slot)",
+					"default": "G13"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G13M1",
+					"type": "text",
+					"desc": "GKey G13-M1",
+					"default": "G13"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G13M2",
+					"type": "text",
+					"desc": "GKey G13-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G13M3",
+					"type": "text",
+					"desc": "GKey G13-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G14",
+					"type": "text",
+					"desc": "GKey G14 (current M slot)",
+					"default": "G14"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G14M1",
+					"type": "text",
+					"desc": "GKey G14-M1",
+					"default": "G14"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G14M2",
+					"type": "text",
+					"desc": "GKey G14-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G14M3",
+					"type": "text",
+					"desc": "GKey G14-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G15",
+					"type": "text",
+					"desc": "GKey G15 (current M slot)",
+					"default": "G15"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G15M1",
+					"type": "text",
+					"desc": "GKey G15-M1",
+					"default": "G15"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G15M2",
+					"type": "text",
+					"desc": "GKey G15-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G15M3",
+					"type": "text",
+					"desc": "GKey G15-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G16",
+					"type": "text",
+					"desc": "GKey G16 (current M slot)",
+					"default": "G16"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G16M1",
+					"type": "text",
+					"desc": "GKey G16-M1",
+					"default": "G16"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G16M2",
+					"type": "text",
+					"desc": "GKey G16-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G16M3",
+					"type": "text",
+					"desc": "GKey G16-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G17",
+					"type": "text",
+					"desc": "GKey G17 (current M slot)",
+					"default": "G17"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G17M1",
+					"type": "text",
+					"desc": "GKey G17-M1",
+					"default": "G17"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G17M2",
+					"type": "text",
+					"desc": "GKey G17-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G17M3",
+					"type": "text",
+					"desc": "GKey G17-M3",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G18",
+					"type": "text",
+					"desc": "GKey G18 (current M slot)",
+					"default": "G18"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G18M1",
+					"type": "text",
+					"desc": "GKey G18-M1",
+					"default": "G18"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G18M2",
+					"type": "text",
+					"desc": "GKey G18-M2",
+					"default": "..."
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.state.kbd.G18M3",
+					"type": "text",
+					"desc": "GKey G18-M3",
+					"default": "..."
+				}
+			],
+			"events": [
+				{
+					"id": "us.wdg.max.tpp.lgk.event.currentProfileChanged",
+					"name": "Current Profile Changed",
+					"format": "When profile changes to $val",
+					"type": "communicate",
+					"valueType": "choice",
+					"valueChoices": ["Default Profile"],
+					"valueStateId": "us.wdg.max.tpp.lgk.state.currentProfileName"
+				},
+				{
+					"id": "us.wdg.max.tpp.lgk.event.currentProfileChangedFlag",
+					"name": "Current Profile Changed",
+					"format": "When profile changes",
+					"type": "communicate",
+					"valueType": "text",
+					"valueStateId": "us.wdg.max.tpp.lgk.state.currentProfileName"
+				}
+			]
+		}
+	]
+}
