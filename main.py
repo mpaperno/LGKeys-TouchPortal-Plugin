@@ -1,9 +1,22 @@
+#!/usr/bin/env python3
 '''
 LGKeys TouchPortal Plugin
-This is a "plugin" for the Touch Portal software (https://www.touch-portal.com)
+This is a "plugin" for the TouchPortal software (https://www.touch-portal.com)
 designed for integrating with Logitech keyboards and other peripherals with
 programmable macro keys (or "G" keys).  It's main purpose is to display the key
 mappings set up for each individual profile in the Logitech Gaming Software.
+
+Run with -h for available command-line arguments.
+
+Reference for supported device names. May be followed by a specific
+device ID separated by period, eg.: Logitech.Gaming.Mouse.G700s
+These should match what appears in the relevant game profiles
+but without the "Logitech.Gaming." prefix.
+
+* Keyboard
+* LeftHandedController
+* Mouse
+* Headset
 '''
 
 __copyright__ = '''
@@ -39,29 +52,10 @@ from modules.lgsdi import LGSDInterface
 from modules.profile_parser import GameProfileParser
 from modules.profile_watcher import WatcherThread
 
-# Set the default game profiles path. Unfortunately there's currently no way to set this
-# dynamically in the TP `entry.tp` file.
-if sys.platform == "win32":
-	GK_DEFAULT_LGS_PROFILE_PATH = os.getenv('LOCALAPPDATA', "") + r"\Logitech\Logitech Gaming Software"
-elif sys.platform == "darwin":
-	GK_DEFAULT_LGS_PROFILE_PATH = os.path.expanduser("~/Library/Application Support/Logitech")
-else:
-	sys.exit(f"Unsupported/unknown platform: {sys.platform}")
-
-# Refernce for supported device names. May  be followed by a specific
-# device ID separated by period, eg.: Mouse.G700s
-# These should match what appears in the relevant game profiles
-# but without the "Logitech.Gaming." prefix.
-#
-# Keyboard
-# LeftHandedController
-# Mouse
-# Headset
-
 __version__ = "1.0"
 GK_PLUGIN_VERSION = 0x0100  # maj|min
 GK_PLUGIN_NAME = "LGKeys TouchPortal Plugin"
-GK_PLUGIN_URL = "https://github.com/mpaperno/LGKeys-TouchPortal-Plugin"
+GK_PLUGIN_URL = "https://max.wdg.us/tpp/lgk"
 GK_PLUGIN_ID = 'us.wdg.max.tpp.lgk'
 GK_SET_PROF_DIR = "Profiles Directory"
 GK_SET_DEVC_CATS = "Device Type(s)"
@@ -87,6 +81,14 @@ GK_STATE_KBD_MEM_SLOT_SFX = ".memorySlot"
 # GK_STATE_PROF_LIST = GK_STATE_ROOT + "profilesList"  # can't update Event valueChoices in TP
 # GK_EVT_PROF_CHANGE = GK_PLUGIN_ID + ".event.currentProfileChanged"  # also doesn't work
 # GK_STATE_PROF_CHANGE_FLG = GK_STATE_ROOT + "currentProfileChangedFlag"  # also doesn't work
+
+# Set the default game profiles path. Can be overridden with -p command-line argument.
+if sys.platform == "win32":
+	GK_DEFAULT_LGS_PROFILE_PATH = os.getenv('LOCALAPPDATA', "") + r"\Logitech\Logitech Gaming Software"
+elif sys.platform == "darwin":
+	GK_DEFAULT_LGS_PROFILE_PATH = os.path.expanduser("~/Library/Application Support/Logitech")
+else:
+	sys.exit(f"Unsupported/unknown platform: {sys.platform}")
 
 # device name : (max keys, max states, profile contextId prefix, the LGS "family" code and suffix for TP State id)
 GK_DEV_DATA_MAP = {
@@ -121,6 +123,9 @@ class GKSettings:
 	profiles: dict = field(default_factory=dict)
 
 
+# These are all our globals.
+# TODO: protect g_settings with mutex?
+
 try:
 	TPClient = Client(
 		pluginId = GK_PLUGIN_ID,
@@ -132,8 +137,8 @@ try:
 except Exception as e:
 	sys.exit(f"Could not create TP Client, exiting. Error was:\n{repr(e)}")
 
-g_log = Logger(getLogger())
 g_settings = GKSettings()
+g_log = Logger(getLogger())
 g_parser = GameProfileParser()
 g_observer = None  # WatcherThread
 g_lgsdi = None     # LGSDInterface
@@ -228,13 +233,13 @@ def onProfilesModified(paths):
 			continue
 		saved_prof = g_settings.profiles.get(prof_id)
 		if saved_prof and saved_prof.fsize == os.stat(path).st_size:
-			# if using debug interface for profile swithces and size has not changed, assume it's just a profile switch
+			# if using debug interface for profile switches and size has not changed, assume it's just a profile switch
 			if g_settings.useLGSDI:
 				continue
 			# quick check for modified profile by just parsing the "header" meta data
 			if not (new_prof := g_parser.parse_profile(path, header_only=True)):
 				continue
-			# Check if only the "last played date" has channged, w/out file size change, meaning profile was only selected (not edited)
+			# Check if only the "last played date" has changed, w/out file size change, meaning profile was only selected (not edited)
 			if new_prof.lpd > saved_prof.lpd:
 				g_settings.profiles[prof_id].lpd = new_prof.lpd
 				if new_prof.lpd > last_played:
@@ -335,7 +340,7 @@ def onLgsdiMessage(msg):
 				TPClient.stateUpdate(stateIdForButtonPressState(dev, key_pfx, int(arg)), str(int(state)))
 
 
-## TP interaciton handlers, mostly called by TPClient (directly or indirectly)
+## TP interaction handlers, mostly called by TPClient (directly or indirectly)
 
 def sendMessage(msg):
 	TPClient.stateUpdate(GK_STATE_MESSAGE, msg)
@@ -407,7 +412,6 @@ def updateKeyStates(profile, state_only=False):
 				if (macro := profile.getMacroForDeviceKey(devtype, keyname)):
 					value = macro.name
 				if state == curr_state or max_sts == 1:
-					# sname = GK_STATE_ROOT + dev_code + "." + currkeyname
 					sname = stateIdForCurrentMacroName(dev_code, key_pfx, key)
 					currkeyname = key_pfx + str(key)
 					if max_sts > 1: currkeyname += " (current M slot)"
@@ -462,7 +466,6 @@ def reloadProfile(prof_id):
 		g_log.warn(f"Profile file not found at: {path}")
 		return None
 	if (new_prof := g_parser.parse_profile(path, devices=g_settings.useDeviceTypes)):
-		# new_prof.fsize = os.path.
 		g_settings.profiles[prof_id] = new_prof
 		updateAvailableProfilesChoice()
 		if prof_id == g_settings.currProfileId:
@@ -656,18 +659,20 @@ def main():
 
 	# handle CLI arguments
 	parser = ArgumentParser()
+	parser.add_argument("-p", metavar="<path>",
+	                    help=f"Full path of game profiles directory (default is: '{GK_DEFAULT_LGS_PROFILE_PATH}')")
 	parser.add_argument("-d", action='store_true',
-											help="Use debug logging.")
+	                    help="Use debug logging.")
 	parser.add_argument("-w", action='store_true',
-											help="Only logging warnings and errors.")
+	                    help="Only log warnings and errors.")
 	parser.add_argument("-q", action='store_true',
-											help="Disable all logging (quiet).")
+	                    help="Disable all logging (quiet).")
 	parser.add_argument("-l", metavar="<logfile>",
-											help="Log to this file (default is stdout).")
+	                    help="Log to this file (default is stdout).")
 	parser.add_argument("-s", action='store_true',
-											help="If logging to file, also output to stdout.")
+	                    help="If logging to file, also output to stdout.")
 	parser.add_argument("--tpstart", action='store_true',
-											help=APSUPPRESS) # Started by TouchPortal. Do not use interactively.
+	                    help=APSUPPRESS) # Started by TouchPortal. Do not use interactively.
 
 	opts = parser.parse_args()
 	del parser
@@ -707,6 +712,9 @@ def main():
 			logger.addHandler(sh)
 	del logger
 
+	if opts.p:
+		g_settings.profDir = opts.p
+
 	# check if started by TouchPortal
 	started_by = ""
 	if opts.tpstart:
@@ -725,7 +733,7 @@ def main():
 		g_log.err(f"Exception in TP Client:\n{format_exc()}")
 		ret = -1
 	finally:
-		TPClient.disconnect()  # make sure it's stopped, no-op if alredy stopped.
+		TPClient.disconnect()  # make sure it's stopped, no-op if already stopped.
 	# TP disconnected, clean up.
 	stopLGSDI()
 	stopObserver()
