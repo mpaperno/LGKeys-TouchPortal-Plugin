@@ -7,7 +7,7 @@
 		"colorDark": "#25274c",
 		"colorLight": "#707ab5"
 	},
-	"plugin_start_cmd": "%TP_PLUGIN_FOLDER%/LGKeys/main.py -l %TP_PLUGIN_FOLDER%/LGKeys/lgkeys.log --tpstart",
+	"plugin_start_cmd": "%TP_PLUGIN_FOLDER%/LGKeys/lgkeys -l %TP_PLUGIN_FOLDER%/LGKeys/lgkeys.log --tpstart",
 	"settings": [
 		{
 			"name": "Device Type(s)",
@@ -24,13 +24,13 @@
 		{
 			"name": "Use LGS Script Integration",
 			"type": "text",
-			"default": "no",
+			"default": "false",
 			"readOnly": false
 		},
 		{
 			"name": "Report Button Presses",
 			"type": "text",
-			"default": "no",
+			"default": "false",
 			"readOnly": false
 		},
 		{
