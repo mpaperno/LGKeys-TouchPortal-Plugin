@@ -24,8 +24,9 @@ import sys
 from logging import getLogger
 from time import sleep, monotonic
 from pathlib import Path
+from ctypes import (CFUNCTYPE, c_int, c_char_p)
 try:
-	from ctypes import (WinDLL, CFUNCTYPE, c_int, c_char_p)
+	from ctypes import WinDLL
 except:
 	pass
 

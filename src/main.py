@@ -45,12 +45,12 @@ from threading import (Thread, Event)
 from argparse import (ArgumentParser, SUPPRESS as APSUPPRESS)
 from logging import (getLogger, Formatter, NullHandler, FileHandler, StreamHandler, DEBUG, INFO, WARNING)
 from datetime import datetime
-from traceback import format_exc
 from modules.TouchPortalAPI import (Client, TYPES as TPTYPES)
 from modules.utils import Logger
-from modules.lgsdi import LGSDInterface
 from modules.profile_parser import GameProfileParser
 from modules.profile_watcher import WatcherThread
+if sys.platform == "win32":
+	from modules.lgsdi import LGSDInterface
 
 __version__ = "1.0"
 GK_PLUGIN_VERSION = 0x0100  # maj|min
@@ -730,13 +730,14 @@ def main():
 	except KeyboardInterrupt:
 		g_log.warn("Caught keyboard interrupt, exiting.")
 	except Exception:
+		from traceback import format_exc
 		g_log.err(f"Exception in TP Client:\n{format_exc()}")
 		ret = -1
 	finally:
 		TPClient.disconnect()  # make sure it's stopped, no-op if already stopped.
 	# TP disconnected, clean up.
-	stopLGSDI()
 	stopObserver()
+	stopLGSDI()
 	del TPClient
 	del g_settings
 

@@ -1,12 +1,12 @@
-import socket
+from socket import (socket, AF_INET, SOCK_STREAM, SHUT_RDWR)
 import selectors
-import json
+from json import (loads as jloads, dumps as jdumps)
 from pyee import ExecutorEventEmitter
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event, Lock
-import requests
-import os
-import base64
+from requests import (head as req_head, get as req_get)
+from os import path as os_path
+from base64 import b64encode
 
 class TYPES:
     onHold_up = 'up'
@@ -55,7 +55,7 @@ class Client(ExecutorEventEmitter):
         self.currentStates = {}
         self.currentSettings = {}
         self.__heldActions = {}
-        self.__stopEvent = Event()       # main loop inerrupt
+        self.__stopEvent = Event()       # main loop interrupt
         self.__stopEvent.set()           # not running yet
         self.__dataReadyEvent = Event()  # set when __sendBuffer has data
         self.__writeLock = Lock()        # mutex for __sendBuffer
@@ -112,7 +112,7 @@ class Client(ExecutorEventEmitter):
                     if (mask & selectors.EVENT_WRITE):
                         self.__write()
                 # Sleep for period or until there is data in the write buffer.
-                # In theory if data is constantly avaiable, this could block,
+                # In theory if data is constantly available, this could block,
                 # in which case it may be better to self.__stopEvent.wait()
                 if self.__dataReadyEvent.wait(self.sleepPeriod):
                     continue
@@ -121,7 +121,7 @@ class Client(ExecutorEventEmitter):
             self.__die(f"Exception in client event loop: {repr(e)}", e)
 
     def __processMessage(self, message: bytes):
-        data = json.loads(message.decode())
+        data = jloads(message.decode())
         if data and (act_type := data.get('type')):
             if self.checkPluginId and (pid := data.get('pluginId')) and pid != self.pluginId:
                 return
@@ -139,7 +139,7 @@ class Client(ExecutorEventEmitter):
 
     def __open(self):
         try:
-            self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.client = socket(AF_INET, SOCK_STREAM)
             self.selector = selectors.DefaultSelector()
             self.client.connect((self.TPHOST, self.TPPORT))
         except Exception:
@@ -162,7 +162,7 @@ class Client(ExecutorEventEmitter):
             except Exception as e:
                 print(f"Error in selector.unregister(): {repr(e)}")
         try:
-            self.client.shutdown(socket.SHUT_RDWR)
+            self.client.shutdown(SHUT_RDWR)
             self.client.close()
         except OSError as e:
             print(f"Error in socket.close(): {repr(e)}")
@@ -274,7 +274,7 @@ class Client(ExecutorEventEmitter):
             if len(self.__sendBuffer) + len(data) > self.SND_BUFFER_SZ:
                 self.__writeLock.release()
                 raise ResourceWarning("TP Client send buffer is full!")
-            self.__sendBuffer += (json.dumps(data)+'\n').encode()
+            self.__sendBuffer += (jdumps(data)+'\n').encode()
             self.__writeLock.release()
             self.__dataReadyEvent.set()
 
@@ -331,9 +331,9 @@ class Tools():
         data = None
         if type == "Auto" or type == "Web":
             try:
-                r = requests.head(image)
+                r = req_head(image)
                 if r.headers['content-type'] in image_formats:
-                    data = requests.get(image).content
+                    data = req_get(image).content
                 else:
                     raise TypeError(f"Returned image content type ({r.headers['content-type']}) is not one of: {image_formats}")
             except ValueError:  # raised by requests module for invalid URLs, less generic than requests.RequestException
@@ -341,11 +341,11 @@ class Tools():
                     pass
                 else:
                     raise
-        if not data and (type == "Auto" or type == "Local") and os.path.isfile(image):
+        if not data and (type == "Auto" or type == "Local") and os_path.isfile(image):
             with open(image, "rb") as img_file:
                 data = img_file.read()
         if data:
-            return base64.b64encode(data).decode('ascii')
+            return b64encode(data).decode('ascii')
         raise ValueError(f"'{image}' is neither a valid URL nor an existing file.")
 
     @staticmethod
@@ -357,7 +357,7 @@ class Tools():
         May raise a `ValueError` if the repository URL can't be reached, doesn't exist, or doesn't have any tags.
         '''
         baselink = f'https://api.github.com/repos/{name}/{repository}/tags'
-        if (r := requests.get(baselink)) and r.ok:
+        if (r := req_get(baselink)) and r.ok:
             if (js := r.json()):
                 return js[0].get('name', "")
             raise ValueError(f'No tags found in repository: {baselink}')
