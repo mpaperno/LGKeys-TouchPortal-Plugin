@@ -1,3 +1,4 @@
+
 -- [LGKeys start] integration script
 function OnEvent(event, arg, family)
 	-- uncomment below to see output messages in the LGS scrpting console
