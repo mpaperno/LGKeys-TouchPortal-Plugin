@@ -1,1 +1,4 @@
-pyee requests PyInstaller pywin32
+pyee
+requests
+pywin32; sys_platform == `win32
+pyinstaller
