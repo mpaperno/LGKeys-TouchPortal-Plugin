@@ -21,40 +21,43 @@ additional application-specific macros provided the regular TouchPortal UI.
 * Option to send G key and mouse button press events back to TouchPortal (Windows only).
 Allows control of TP actions via hardware keys.
 
+## Examples
+
+Some example pages are included in the plugin distribution (download). The examples are kept in this
+repository, in the `assets` folder, and may be updated more often than the plugin releases. Be sure to
+check the [assets](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/tree/master/assets) folder in this repo
+for the latest examples.
+
 ## Setup
 
 ### Requirements:
 * [TouchPortal](https://www.touch-portal.com) for Windows/MacOS, v2.3.010 or newer.
 * [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
 (latest and last version) installed. This plugin _may_ work with Logitech G Hub, but this is not tested at all.
-* Python 3.8 or newer, with `pip` module (64-bit preferred, tested with
-[python.org](https://www.python.org/downloads/) versions).
-* Extra Python modules: `pyee`, `requests`, `pywin32` (Windows only). Install using:
-  * `pip install pyee requests pywin32`
 * Download the latest version of this plugin from the
-[Releases](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/releases) page.
+[Releases](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/releases) page. Grab the .zip file which matches
+your operating system<br>
+(eg. `LGKeys-TouchPortal-Plugin_v1.0_windows.zip` or `LGKeys-TouchPortal-Plugin_v1.0_macos.zip`).
 
 ### Install:
-1. Install Python and the extra modules if necessary. To check if you have Python installed and which version it is,
-open a command prompt and just type `python`. If it is installed, this will show you the version and architecture
-(32 or 64 bits). (Type <kbd>CTRL+Z</kbd> and <kbd>Enter</kbd> to exit the Python shell.)
-2. Unpack the downloaded plugin `.zip` file to a temporary location on your computer.
-3. Import the plugin:
+1. Unpack the downloaded _LGKeys_ `.zip` file to a temporary location on your computer.
+2. Import the plugin:
     1. Start TouchPortal (if not already running);
     2. Click the "wrench" icon at the top and select "Import plugin..." from the menu;
     3. Browse to where you unpacked this plugin's `.zip` archive, and select the `LGKeys.tpp` file;
     4. When prompted by TouchPortal, select "Yes" to trusting the plugin startup script (the source code is public!).
-4. Verify proper operation. The zip file you downloaded contains some sample pages to get you started. You can import
+3. Verify proper operation. The zip file you downloaded contains some sample pages to get you started. You can import
 these pages in the usual way: from the TouchPortal _Pages_ screen -> _Manage Page..._ button -> _Import Page_ menu item.
-5. After importing the plugin into TouchPortal, the files you unpacked from the plugin's archive are no longer required.
-However, you may want to keep them around for a while to use the optional setup scripts, example pages, buttons, or
-other assets which are included in the archive (keep reading for more information on all those).
+4. After importing the plugin into TouchPortal, the `LGKeys.tpp` file you extracted earlier is no longer
+required. If you don't want/need to use the other assets and tools provided in the plugin archive, those can of course
+also be deleted.
 
 ### Configure
 Several settings are available in the TouchPortal _Settings_ window (select _Plug-ins_ on the left, then
 _LGKeys TouchPortal Plugin_ from the dropdown menu). The current TP settings system for plugins is not very advanced,
 so some of these could be easier to use (hopefully this can improve in the future).
 The options are as follows:
+
 * `Device Type(s)`: Enter the device(s) you want LGKeys to report settings for. Your profiles may contain mappings
 for devices you don't currently use (or own anymore), which will just slow everything down and create
 un-necessary data in TouchPortal. This setting can list one or more devices, with multiple devices separated by commas.
@@ -70,25 +73,32 @@ Typically you would want to use one or more of the following:
   It's possible that in your game profiles, the device you want is specified with a model number after the type.
   For example if you owned several models of keyboards or mice, your profiles may have different settings for the
   different device models. For example my mouse device is listed as "Mouse.G700". You would then need to specify
-  this full device name in the _Device Type(s)_ list. The only real way to determine this is to open up a game profile
-  file (plain-text XML) and see what the device names look like. The profiles are stored in:
-    * Windows: `C:\Users\<User_Name>\AppData\Local\Logitech\Logitech Gaming Software\profiles`
-    * MacOS: `/homes/<User_Name>/Library/Application Support/Logitech/profiles`
+  this full device name in the _Device Type(s)_ list. The only real way to determine this is to look inside the
+  game profile files and see what's in there... which is not very convenient.
 
-  Scroll down to where the _assignments_ start and you should see lines like:
+  Instead, I have provided a small utility which will scan all your game profiles and find the device names
+  listed in them. It will show you which devices are in each profile, and also provides an aggregated list of
+  unique device names found across all profiles.
 
-    `<assignments devicecategory="Logitech.Gaming.Mouse.G700">`
+  The utility is named `list_devices` and is included in this plugin's distribution .zip file, in the `tools` folder
+  (the code for it is in this repository as well).  Simply run this file, either from a command prompt or by
+  double-clicking it. If your profiles aren't in the standard location, run the utility from a command prompt
+  and specify the path to your profiles with the `-p` option.
 
-  So in this case you'd want to use "Mouse.G700" in the _Device Type(s)_ list (we ignore the "Logitech.Gaming" part).
-  Or, for example combined with a keyboard, that would be "Keyboard, Mouse.G700".
+  So for example if the utility reports that your mouse is called "Mouse.G700" in the profiles, you'd want to use
+  that exact name in the _Device Type(s)_ list. Or, for example combined with a keyboard, that would be
+  "Keyboard, Mouse.G700".
 
 * `Unmapped Button Text`: What to show for buttons/slots which don't have a mapping set. Default is "..."
 (three periods). This could be any text value, or be left blank.
+
 * `Profile Change Poll Interval`: Set this to zero to disable monitoring of profiles folder for changes (edited
 profiles would need to be refreshed manually, and profile switch detection is disabled unless _LGS Script Integration_
 is enabled). On MacOS this also controls how often the folder is scanned for changes.
+
 * `Use LGS Script Integration`: If set to "true", LGKeys will use optional LGS integration which requires some extra
 setup (eee below). Only works on Windows with 64-bit Python. Default is "false"
+
 * `Report Button Presses`: Requires _LGS Script Integration_ to also be enabled. If "true" then LGKeys will
 send G key and mouse button press and release events to TouchPortal as custom states. Can be used to activate TP
 actions with hardware keys, for example. Requires Windows with 64-bit Python and the optional integration as described
@@ -98,7 +108,7 @@ The other settings on this page are read-only and only used internally to save p
 They can be ignored.
 
 
-### Optional integration setup (requires Windows with 64-bit Python):
+### Optional integration setup (Windows only):
 This optional step provides closer integration with Logitech Gaming Software to allow the following features:
 * Quicker/more accurate profile switching.
 * Detection of current memory slot (M#) on keyboards and G13 keypad.
@@ -109,19 +119,26 @@ scripts in profiles). The good news is that I've provided a utility to automatic
 your existing profiles.  However, if you already use custom scripts, you may want to do this manually.
 Only the profiles you want to use the extra features with would need to have this special script set up.
 
-#### Option 1, use provided utility:
-1. Shut down/close the Logitech Gaming Software completely (right-click the taskbar icon and select Exit).
-2. Open a Windows command prompt in the folder where you unpacked the plugin zip archive.
-3. Run the utility by entering: `update_profiles.py --add`
-    * You may need to add `py -3` or `python` to the start of that command (but usually .py files just work if you
-    have Python installed).
+#### Option 1, use provided utility (update_profiles.exe):
+1. If LGKeys Plugin is already running, you should stop it. This can be done from the TP Settings -> Plug-ins screen.
+2. Shut down/close the Logitech Gaming Software completely (right-click the taskbar icon and select Exit).
+3. Open a Windows command prompt in the `tools` folder where you unpacked the downloaded plugin zip archive.
+4. Run the utility by entering: `update_profiles` (you can also just double-click to run this file
+from Explorer, but I recommend you use a command prompt).
+    * Read the warnings. It will ask you to confirm that you want to proceed (you must answer with a "y" or "yes").
+    * By default it will also make a backup of all your profiles before it does anything else.
+    The backup will be in a uniquely-named sub-folder of your LGS profiles folder.
+    You can also specify a backup folder using the `-b` startup option.<br/>
+    Eg. `update_profiles -b C:\temp\LGS_profiles`
     * The utility will let you know if there is an error or any other problems or warnings.
-    * It will also make a backup of all your profiles before it does anything else. The backup will be in a
-    sub-folder of your LGS profiles folder.
     * If it can't find your game profiles in the default location, you can specify one on the command line with
-    `-p` option. E.g. `update_profiles.py --add -p C:\ProgramData\Logitech\profiles`
-    * Run `update_profiles.py -h` to see all command line options.
-4. Restart the Logitech Gaming Software application (eg. from your Start menu).
+    `-p` option.<br/>
+    Eg. `update_profiles -p C:\ProgramData\Logitech\profiles`
+    * You can update only one, or some, of your profiles, using the `--names` option.<br/>
+    Eg. `update_profiles --names "Default Profile" "My Game"`
+    * Run `update_profiles -h` to see all command line options.
+5. Restart the Logitech Gaming Software application (eg. from your Start menu), and TouchPortal or just the plugin
+itself (agin from the TP Settings screen).
 
 #### Option 2, insert script manually via script editor:
 1. Open the Logitech Gaming Software application and go to the device setup page where you normally set up
@@ -129,37 +146,71 @@ macros and such.
 2. Right-click on the icon of a profile you want to set up and select the _Scripting_ menu item.
 This opens up the Lua script editor. Usually every profile has a simple default script which echoes
 some event information to the console below the editor window.
-3. In the _Script_ menu select _Import..._, navigate to the folder where you unpacked the plugin zip archive,
-and select the `lgkeys-integration.lua` file.
+3. In the _Script_ menu select _Import..._, navigate to the `tools` folder inside where you unpacked the
+plugin zip archive, and select the `lgkeys-integration.lua` file.
     * **Note**: importing will replace any existing script (LGS will warn you). If you have a script you want to
     keep, then you will need to manually "integrate" the code from `lgkeys-integration.lua` into your existing script.
     The code is very basic, so it shouldn't be a problem.
 4. In the imported script, find the line with `arg = "PROFILE_NAME"` and replace the `PROFILE_NAME` part with the
-profile's actual, full name (or, even better, its GUID, which is that profile's file name in the LGS profiles
-folder... see Option 3 for details).
+profile's actual, full name.
+    * Or, even better, its "GUID," which is that profile's file name in the LGS profiles
+    folder (including the curly braces, but without the ".xml" extension).
+    You can use the included `list_devices` utility (mentioned above) to see a list of all
+    your profiles by name, which also shows the corresponding file name and GUID.
+    Using the GUID is preferable to the profile name, because you may change the name later,
+    but the ID will always remain the same while that profile exists.
 5. <kbd>CTRL+S</kbd> to save the script, and you're done (with that profile).
 
 #### Option 3, insert script by editing profile XML file(s) directly:
 This method is ultimately faster if you need to modify several profiles at once, you just need to be a little
 careful when editing the files. This is also essentially what my utility script (Option 1) does for you.
 You'll need to use Notepad or your favorite plain-text editor to edit the profile XML files.
-1. Shut down the Logitech Gaming Software application.
-2. Using Explorer browse to the LGS profiles folder, which is in
+1. If LGKeys Plugin is already running, you should stop it. This can be done from the TP Settings -> Plug-ins screen.
+2. Shut down/close the Logitech Gaming Software completely (right-click the taskbar icon and select Exit).
+3. Using Explorer browse to the LGS profiles folder, which is usually in<br>
 `C:\Users\<User_Name>\AppData\Local\Logitech\Logitech Gaming Software\profiles`
     * You _may_ want to copy the profiles to a **backup** folder if you don't already have one (in which case also
     strongly consider backing up those profiles regularly).
-3. Finding the right profile can be tricky... perhaps sort by modification date and then open each file
+4. Finding the right profile can be tricky... perhaps sort by modification date and then open each file
 in the text editor until you find the right one(s). The profile's name is shown on the 3rd line of each file,
-as an attribute of the `profile` XML element.
-4. Scroll down to the end of the file to the `<script>...</script>` tags.  Any existing script will be
+as an attribute of the `profile` XML element. You can also use the previously-mentioned `list_devices` utility
+to see a list of all your profiles bt name and the corresponding file name.
+5. Scroll down to the end of the file to the `<script>...</script>` tags.  Any existing script will be
 contained between those tags.
-5. Replace the existing script with the contents of `lgkeys-integration.lua` as mentioned above.
-6. Also as above, find the script line with `arg = "PROFILE_NAME"` and replace the `PROFILE_NAME`
+6. Replace the existing script with the contents of `lgkeys-integration.lua` as mentioned above (or edit any
+existing script as appropriate so that the `DbgHandler` function fires correctly).
+7. Also as in Option 2, find the script line with `arg = "PROFILE_NAME"` and replace the `PROFILE_NAME`
 part with the profile's GUID. The GUID is the file's name (including the curly braces, but without the ".xml" extension)
 and can also be found at the top of the profile file, in the `profile` XML tag, as the `guid` attribute.
 Using the GUID is preferable to the profile name, because you may change the name later,
 but the ID will always remain the same while that profile exists.
-7. Save the file. Modify any others you want, then restart the LGS software.
+8. Save the file. Modify any others you want, then restart the LGS software and LGKeys plugin.
+
+
+### Named Memory Slots
+While LGS doesn't provide any way to assign names to the M slots, I've designed a custom way to do that using the
+profile "description" fields within LGS. These M slot names can then be shown dynamically in TP based on
+the current profile, and they become another nice visual reference.
+
+To set this up, simply edit a game profile's _Description_ field (it's in the profile's _Properties_).
+Enter something like this:
+
+    M1:EDIT; M2:DIFF; M3:DEBUG;
+
+The syntax is simple: <kbd>M</kbd> followed by the slot number (1-3), then a colon (<kbd>:</kbd>) followed by the name for that memory slot, and ending with a semicolon (<kbd>;</kbd>). If you already have some other description, you could
+add the slot names at the end.
+
+You can then use the `<Device> Memory <N> Name` _States_ (described below) to display the names on your LGKeys page(s).
+
+You do not have to provide names for all memory slots. Any that are not specified in the description will
+default to the usual "M1", "M2", or "M3" names.
+
+If you have both a "G" keyboard _and_ a G13 keypad, which have individual memory slots, you can provide names for
+the specific devices by using a modified version of the above syntax:
+
+    kb.M1:EDIT; kb.M2:DIFF; kb.M3:DEBUG; lhc.M1:C++; lhc.M2:Python; lhc.M3:Lua;
+
+Where "kb" is for the keyboard memory slots and "lhc" is for the G13 ("LeftHandedController" in LGS-speak).
 
 
 ## Usage
@@ -168,10 +219,10 @@ in this repository). This includes several page layouts demonstrating how to use
 likely want to customize these examples based on your actual devices (eg. how many G keys on your keyboard and how
 they're laid out), but they contain all the building blocks you may need.
 
-Further on, we dive into what the plugin actually provides.
+For further reference, we dive into what the plugin actually provides.
 
 ### States
-Most of the functionality is provided by TouchPortal States. States provide the macro names to display for each
+Most of the functionality is provided by TouchPortal _States_. _States_ provide the macro names to display for each
 key and memory (M) slot, the currently active profile, M slot names, and so on.  A few of the states always
 exist regardless of which device(s) you're using (static states), but most will depend on your actual configuration.
 
@@ -234,32 +285,6 @@ It could be useful for example if you want to load a particular TP page when a s
 built-in "When plug-in state changes" event can be used for the same thing.
 
 
-### Named Memory Slots
-While LGS doesn't provide any way to assign names to the M slots, I've designed a custom way to do that using the
-profile "description" fields which LGS does provide. These M slot names can then be shown dynamically in TP based on
-the current profile, and they become another nice visual reference.
-
-To set this up, simply edit a game profile's _Description_ field (it's in the profile's _Properties_).
-Enter something like this:
-
-    M1:EDIT; M2:DIFF; M3:DEBUG;
-
-The syntax is simple: <kbd>M</kbd> followed by the slot number (1-3), then a colon (<kbd>:</kbd>) followed by the name for that memory slot, and ending with a semicolon (<kbd>;</kbd>). If you already have some other description, you could
-add the slot names at the end.
-
-You can then use the `<Device> Memory <N> Name` _States_ described above to display the names on your LGKeys page(s).
-
-You do not have to provide names for all memory slots. Any that are not specified in the description will
-default to the usual "M1", "M2", or "M3" names.
-
-If you have both a "G" keyboard _and_ a G13 keypad, which have individual memory slots, you can provide names for
-the specific devices by using a modified version of the above syntax:
-
-    kb.M1:EDIT; kb.M2:DIFF; kb.M3:DEBUG; lhc.M1:C++; lhc.M2:Python; lhc.M3:Lua;
-
-Where "kb" is for the keyboard memory slots and "lhc" is for the G13 ("LeftHandedController" in LGS-speak).
-
-
 ## Troubleshooting
 In TouchPortal, select _"Logs"_ in the left bar, then look for messages in the log with
 the word "Plugin" after the time stamp. If everything is working properly, you should see a number of "LOG" type
@@ -276,11 +301,27 @@ Look for a `lgkeys.log` file in that folder. If it does not exist, that means th
 (check the TouchPortal log for possible reasons). If it does exist, it will likely show useful information for further
 troubleshooting.
 
+## Running From Source / Development
+You can test the plugin's client by running `main.py` from the `src` folder of this repository at a command prompt.
+For this to work properly, this plugin's `src/entry.tp` file must already be "installed" in the TP plugins folder,
+for example in `C:\Users\<User_Name>\AppData\Roaming\TouchPortal\plugins\LGKeys\entry.tp`.
+TouchPortal also needs to be running, but make sure the LGKeys Plugin is **stopped** from the TP Settings page.
+You do not want two copies of the client running at the same time.
+
+### Requirements
+* Python 3.8 or newer, with `pip` module (64-bit preferred, tested with
+[python.org](https://www.python.org/downloads/) versions (v3.9.5 as of writing) on Windows 10 and MacOS 11).
+* Extra Python modules: `pyee`, `requests`, `pywin32` (Windows only).
+* To build the plugin distribution or self-contained executable files (like in the released versions),
+the `PyInstaller` module is also required.
+* To install all the required Python modules at once, switch to the `build` directory of this repository and run
+    * `pip3 install -r requirements.txt`
+
 ## Support
 Open an Issue here on GitHub or start a Discussion. Please provide as much detail as possible. Logs usually help!
 
 ## Credits
-The plugin is written, tested, and documented by myself, Maxim (Max) Paperno.
+The plugin is written, tested, and documented by myself, Maxim (Max) Paperno.<br/>
 https://github.com/mpaperno/
 
 Uses a version of [TouchPortal-API for Python](https://github.com/KillerBOSS2019/TouchPortal-API)
@@ -293,7 +334,7 @@ library from Gondwana Software. License unspecified. Also check out their
 as this plugin (and some of the instructions to set up profile integration are very similar).
 
 ## Copyright, License, and Disclaimer
-LGKeys TouchPortal Plugin
+LGKeys TouchPortal Plugin<br/>
 Copyright Maxim Paperno, all rights reserved.
 
 This program and associated files may be used under the terms of the GNU
