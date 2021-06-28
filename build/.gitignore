@@ -1,0 +1,8 @@
+/build
+/*.spec
+/*.exe
+/*.tpp
+/*.zip
+/lgkeys
+/list_devices
+/update_profiles
