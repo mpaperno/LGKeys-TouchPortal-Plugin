@@ -1,12 +1,16 @@
-# LGKeys TouchPortal Plugin
+<p align="center">
+<img src="https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/images/banner/Banne1_fade_720x307.png" alt="LGKeys Banner"/>
+</p>
 
-This is a "plugin" for the [TouchPortal](https://www.touch-portal.com) software, designed for integrating with Logitech
+# LGKeys Touch Portal Plugin
+
+This is a "plugin" for the [Touch Portal](https://www.touch-portal.com) software, designed for integrating with Logitech
 Gaming devices like keyboards and other peripherals with programmable macro keys (or "G" keys).
 Its main purpose is to be used as a reference to display the key mappings which have been set up in the
 Logitech Gaming Software (LGS) for each individual profile. The motivation is that I can never remember
 all the mappings, especially when frequently switching applications, and printed references are difficult
 to maintain. This solves the issue nicely, and in addition to my hardware key macros I can also have
-additional application-specific macros provided the regular TouchPortal UI.
+additional application-specific macros provided the regular _Touch Portal_ UI.
 
 ## Features
 
@@ -18,7 +22,7 @@ additional application-specific macros provided the regular TouchPortal UI.
 * Automatically detects when current memory slot changes (Windows only).
 * Special feature option to assign custom names for the individual memory slots, per game profile.
 * Monitors game profiles for changes and automatically updates all displayed macros (manual refresh also available).
-* Option to send G key and mouse button press events back to TouchPortal (Windows only).
+* Option to send G key and mouse button press events back to _Touch Portal_ (Windows only).
 Allows control of TP actions via hardware keys.
 
 ## Examples
@@ -28,10 +32,13 @@ repository, in the `assets` folder, and may be updated more often than the plugi
 check the [assets](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/tree/master/assets) folder in this repo
 for the latest examples.
 
+Some page images are available on the [Screenshots](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/Screenshots)
+wiki page.
+
 ## Setup
 
 ### Requirements:
-* [TouchPortal](https://www.touch-portal.com) for Windows/MacOS, v2.3.010 or newer.
+* [Touch Portal](https://www.touch-portal.com) for Windows/MacOS, v2.3.010 or newer.
 * [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
 (latest and last version) installed. This plugin _may_ work with Logitech G Hub, but this is not tested at all.
 * Download the latest version of this plugin from the
@@ -42,25 +49,25 @@ your operating system<br>
 ### Install:
 1. Unpack the downloaded _LGKeys_ `.zip` file to a temporary location on your computer.
 2. Import the plugin:
-    1. Start TouchPortal (if not already running);
+    1. Start _Touch Portal_ (if not already running);
     2. Click the "wrench" icon at the top and select "Import plugin..." from the menu;
     3. Browse to where you unpacked this plugin's `.zip` archive, and select the `LGKeys.tpp` file;
-    4. When prompted by TouchPortal, select "Yes" to trusting the plugin startup script (the source code is public!).
+    4. When prompted by _Touch Portal_, select "Yes" to trusting the plugin startup script (the source code is public!).
 3. Verify proper operation. The zip file you downloaded contains some sample pages to get you started. You can import
-these pages in the usual way: from the TouchPortal _Pages_ screen -> _Manage Page..._ button -> _Import Page_ menu item.
-4. After importing the plugin into TouchPortal, the `LGKeys.tpp` file you extracted earlier is no longer
+these pages in the usual way: from the _Touch Portal_ _Pages_ screen -> _Manage Page..._ button -> _Import Page_ menu item.
+4. After importing the plugin into _Touch Portal_, the `LGKeys.tpp` file you extracted earlier is no longer
 required. If you don't want/need to use the other assets and tools provided in the plugin archive, those can of course
 also be deleted.
 
 ### Configure
-Several settings are available in the TouchPortal _Settings_ window (select _Plug-ins_ on the left, then
-_LGKeys TouchPortal Plugin_ from the dropdown menu). The current TP settings system for plugins is not very advanced,
+Several settings are available in the _Touch Portal_ _Settings_ window (select _Plug-ins_ on the left, then
+_LGKeys _Touch Portal_ Plugin_ from the dropdown menu). The current TP settings system for plugins is not very advanced,
 so some of these could be easier to use (hopefully this can improve in the future).
 The options are as follows:
 
 * `Device Type(s)`: Enter the device(s) you want LGKeys to report settings for. Your profiles may contain mappings
 for devices you don't currently use (or own anymore), which will just slow everything down and create
-un-necessary data in TouchPortal. This setting can list one or more devices, with multiple devices separated by commas.
+un-necessary data in _Touch Portal_. This setting can list one or more devices, with multiple devices separated by commas.
 Typically you would want to use one or more of the following:
     * `Keyboard` - for a full keyboard device like G11, G15, G510, etc. This is the default setting.
     * `Mouse` - for a mouse, like a G700
@@ -100,7 +107,7 @@ is enabled). On MacOS this also controls how often the folder is scanned for cha
 setup (eee below). Only works on Windows with 64-bit Python. Default is "false"
 
 * `Report Button Presses`: Requires _LGS Script Integration_ to also be enabled. If "true" then LGKeys will
-send G key and mouse button press and release events to TouchPortal as custom states. Can be used to activate TP
+send G key and mouse button press and release events to _Touch Portal_ as custom states. Can be used to activate TP
 actions with hardware keys, for example. Requires Windows with 64-bit Python and the optional integration as described
 below.
 
@@ -112,14 +119,14 @@ They can be ignored.
 This optional step provides closer integration with Logitech Gaming Software to allow the following features:
 * Quicker/more accurate profile switching.
 * Detection of current memory slot (M#) on keyboards and G13 keypad.
-* Sending G key/mouse button press events to TouchPortal.
+* Sending G key/mouse button press events to _Touch Portal_.
 
 Unfortunately this requires a special Lua script to be configured for each game profile (LGS allows for custom
 scripts in profiles). The good news is that I've provided a utility to automatically set up these scripts for all
 your existing profiles.  However, if you already use custom scripts, you may want to do this manually.
 Only the profiles you want to use the extra features with would need to have this special script set up.
 
-#### Option 1, use provided utility (update_profiles.exe):
+#### Integration Setup Option 1
 1. If LGKeys Plugin is already running, you should stop it. This can be done from the TP Settings -> Plug-ins screen.
 2. Shut down/close the Logitech Gaming Software completely (right-click the taskbar icon and select Exit).
 3. Open a Windows command prompt in the `tools` folder where you unpacked the downloaded plugin zip archive.
@@ -137,54 +144,12 @@ from Explorer, but I recommend you use a command prompt).
     * You can update only one, or some, of your profiles, using the `--names` option.<br/>
     Eg. `update_profiles --names "Default Profile" "My Game"`
     * Run `update_profiles -h` to see all command line options.
-5. Restart the Logitech Gaming Software application (eg. from your Start menu), and TouchPortal or just the plugin
+5. Restart the Logitech Gaming Software application (eg. from your Start menu), and _Touch Portal_ or just the plugin
 itself (agin from the TP Settings screen).
 
-#### Option 2, insert script manually via script editor:
-1. Open the Logitech Gaming Software application and go to the device setup page where you normally set up
-macros and such.
-2. Right-click on the icon of a profile you want to set up and select the _Scripting_ menu item.
-This opens up the Lua script editor. Usually every profile has a simple default script which echoes
-some event information to the console below the editor window.
-3. In the _Script_ menu select _Import..._, navigate to the `tools` folder inside where you unpacked the
-plugin zip archive, and select the `lgkeys-integration.lua` file.
-    * **Note**: importing will replace any existing script (LGS will warn you). If you have a script you want to
-    keep, then you will need to manually "integrate" the code from `lgkeys-integration.lua` into your existing script.
-    The code is very basic, so it shouldn't be a problem.
-4. In the imported script, find the line with `arg = "PROFILE_NAME"` and replace the `PROFILE_NAME` part with the
-profile's actual, full name.
-    * Or, even better, its "GUID," which is that profile's file name in the LGS profiles
-    folder (including the curly braces, but without the ".xml" extension).
-    You can use the included `list_devices` utility (mentioned above) to see a list of all
-    your profiles by name, which also shows the corresponding file name and GUID.
-    Using the GUID is preferable to the profile name, because you may change the name later,
-    but the ID will always remain the same while that profile exists.
-5. <kbd>CTRL+S</kbd> to save the script, and you're done (with that profile).
-
-#### Option 3, insert script by editing profile XML file(s) directly:
-This method is ultimately faster if you need to modify several profiles at once, you just need to be a little
-careful when editing the files. This is also essentially what my utility script (Option 1) does for you.
-You'll need to use Notepad or your favorite plain-text editor to edit the profile XML files.
-1. If LGKeys Plugin is already running, you should stop it. This can be done from the TP Settings -> Plug-ins screen.
-2. Shut down/close the Logitech Gaming Software completely (right-click the taskbar icon and select Exit).
-3. Using Explorer browse to the LGS profiles folder, which is usually in<br>
-`C:\Users\<User_Name>\AppData\Local\Logitech\Logitech Gaming Software\profiles`
-    * You _may_ want to copy the profiles to a **backup** folder if you don't already have one (in which case also
-    strongly consider backing up those profiles regularly).
-4. Finding the right profile can be tricky... perhaps sort by modification date and then open each file
-in the text editor until you find the right one(s). The profile's name is shown on the 3rd line of each file,
-as an attribute of the `profile` XML element. You can also use the previously-mentioned `list_devices` utility
-to see a list of all your profiles bt name and the corresponding file name.
-5. Scroll down to the end of the file to the `<script>...</script>` tags.  Any existing script will be
-contained between those tags.
-6. Replace the existing script with the contents of `lgkeys-integration.lua` as mentioned above (or edit any
-existing script as appropriate so that the `DbgHandler` function fires correctly).
-7. Also as in Option 2, find the script line with `arg = "PROFILE_NAME"` and replace the `PROFILE_NAME`
-part with the profile's GUID. The GUID is the file's name (including the curly braces, but without the ".xml" extension)
-and can also be found at the top of the profile file, in the `profile` XML tag, as the `guid` attribute.
-Using the GUID is preferable to the profile name, because you may change the name later,
-but the ID will always remain the same while that profile exists.
-8. Save the file. Modify any others you want, then restart the LGS software and LGKeys plugin.
+For more integration options, especially if you already use Lua scripting in profiles, see the
+[LGS Script Integration Options](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/LGS-Script-Integration)
+wiki page.
 
 
 ### Named Memory Slots
@@ -222,7 +187,7 @@ they're laid out), but they contain all the building blocks you may need.
 For further reference, we dive into what the plugin actually provides.
 
 ### States
-Most of the functionality is provided by TouchPortal _States_. _States_ provide the macro names to display for each
+Most of the functionality is provided by _Touch Portal_ _States_. _States_ provide the macro names to display for each
 key and memory (M) slot, the currently active profile, M slot names, and so on.  A few of the states always
 exist regardless of which device(s) you're using (static states), but most will depend on your actual configuration.
 
@@ -257,7 +222,7 @@ button, one for each memory slot. These states do not exist for mice and headset
 * `<Device> <Button> Press State` - These are sent only if the `Report Button Presses` setting described previously
 is enabled (and LGS scripting integration is used). These states represent when a particular `<Button>` on `<Device>`
 is pressed or released. When pressed, the state value is "1", and when released (or not pressed) the value is "0".
-These states can be used to trigger any other actions in TouchPortal using the built-in
+These states can be used to trigger any other actions in _Touch Portal_ using the built-in
 "When plug-in state changes" Event.
 
 
@@ -286,39 +251,19 @@ built-in "When plug-in state changes" event can be used for the same thing.
 
 
 ## Troubleshooting
-In TouchPortal, select _"Logs"_ in the left bar, then look for messages in the log with
-the word "Plugin" after the time stamp. If everything is working properly, you should see a number of "LOG" type
-messages, and no errors. On the other hand, if the plugin couldn't start properly or has some other problem,
-there should be a useful error message in the log.  This log may have a lot of entries, so another useful feature is to
-select _"Log Errors Only"_ in the _"Current Log Level"_ selector on the right of the _Logs_ screen and then re-start TP
-or re-import the plugin.
-
-The LGKeys plugin also keeps its own log file. You can find this in your TouchPortal user data folder, which would be:
-* Windows: `C:\Users\<User_Name>\AppData\Roaming\TouchPortal\plugins\LGKeys`
-* Mac: `/Documents/TouchPortal/plugins/LGKeys`
-
-Look for a `lgkeys.log` file in that folder. If it does not exist, that means the plugin can't even start for some reason
-(check the TouchPortal log for possible reasons). If it does exist, it will likely show useful information for further
-troubleshooting.
+Check out the [Troubleshooting](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/Troubleshooting) wiki page.
 
 ## Running From Source / Development
-You can test the plugin's client by running `main.py` from the `src` folder of this repository at a command prompt.
-For this to work properly, this plugin's `src/entry.tp` file must already be "installed" in the TP plugins folder,
-for example in `C:\Users\<User_Name>\AppData\Roaming\TouchPortal\plugins\LGKeys\entry.tp`.
-TouchPortal also needs to be running, but make sure the LGKeys Plugin is **stopped** from the TP Settings page.
-You do not want two copies of the client running at the same time.
+Please see the [Using Plugin Source Code Version](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/Using-Source-Version)
+wiki page.
 
-### Requirements
-* Python 3.8 or newer, with `pip` module (64-bit preferred, tested with
-[python.org](https://www.python.org/downloads/) versions (v3.9.5 as of writing) on Windows 10 and MacOS 11).
-* Extra Python modules: `pyee`, `requests`, `pywin32` (Windows only).
-* To build the plugin distribution or self-contained executable files (like in the released versions),
-the `PyInstaller` module is also required.
-* To install all the required Python modules at once, switch to the `build` directory of this repository and run
-    * `pip3 install -r requirements.txt`
+## Bugs and Support
+I've only tested this whole thing in very limited conditions so far (my main Windows 10 PC and a little in a "hackintosh" VM).
+Your mileage may vary, as they say!  But I'm happy to help figure out any problems and improve the plugin.
 
-## Support
-Open an Issue here on GitHub or start a Discussion. Please provide as much detail as possible. Logs usually help!
+Open an [Issue](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/issues) here on GitHub or start a
+[Discussion](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/discussions).
+Please provide as much detail as possible. Logs usually help!
 
 ## Credits
 The plugin is written, tested, and documented by myself, Maxim (Max) Paperno.<br/>
