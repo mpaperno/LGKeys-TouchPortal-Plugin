@@ -4,9 +4,6 @@ from json import (loads as jloads, dumps as jdumps)
 from pyee import ExecutorEventEmitter
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event, Lock
-from requests import (head as req_head, get as req_get)
-from os import path as os_path
-from base64 import b64encode
 
 class TYPES:
     onHold_up = 'up'
@@ -316,6 +313,10 @@ class Client(ExecutorEventEmitter):
             return next((x.get('value') for x in data if x.get('id', '') == valueId), None)
         return next((x.get('value') for x in data if x.get('value') != None), None)
 
+"""
+from requests import (head as req_head, get as req_get)
+from os import path as os_path
+from base64 import b64encode
 
 class Tools():
 
@@ -363,3 +364,4 @@ class Tools():
             raise ValueError(f'No tags found in repository: {baselink}')
         else:
             raise ValueError(f'Invalid repository URL or response: {baselink}')
+"""
