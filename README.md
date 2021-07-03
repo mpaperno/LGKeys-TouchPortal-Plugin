@@ -10,7 +10,7 @@ Its main purpose is to be used as a reference to display the key mappings which 
 Logitech Gaming Software (LGS) for each individual profile. The motivation is that I can never remember
 all the mappings, especially when frequently switching applications, and printed references are difficult
 to maintain. This solves the issue nicely, and in addition to my hardware key macros I can also have
-additional application-specific macros provided the regular _Touch Portal_ UI.
+additional application-specific macros provided by the regular _Touch Portal_ UI.
 
 ## Features
 
@@ -45,17 +45,19 @@ wiki page.
 [Releases](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/releases) page. Grab the .zip file which matches
 your operating system<br>
 (eg. `LGKeys-TouchPortal-Plugin_v1.0_windows.zip` or `LGKeys-TouchPortal-Plugin_v1.0_macos.zip`).
+Alternatively, you can also [use the source code](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/Using-Source-Version) version.
 
 ### Install:
 1. Unpack the downloaded _LGKeys_ `.zip` file to a temporary location on your computer.
 2. Import the plugin:
-    1. Start _Touch Portal_ (if not already running);
-    2. Click the "wrench" icon at the top and select "Import plugin..." from the menu;
-    3. Browse to where you unpacked this plugin's `.zip` archive, and select the `LGKeys.tpp` file;
-    4. When prompted by _Touch Portal_, select "Yes" to trusting the plugin startup script (the source code is public!).
-3. Verify proper operation. The zip file you downloaded contains some sample pages to get you started. You can import
+    1. Start _Touch Portal_ (if not already running).
+    2. Click the "wrench" icon at the top and select "Import plugin..." from the menu.
+    3. Browse to where you unpacked this plugin's `.zip` archive, and select the `LGKeys.tpp` file.
+3. Restart _Touch Portal_
+    * When prompted by _Touch Portal_ to trust the plugin startup script, select "Yes" (the source code is public!).
+4. Verify proper operation. The zip file you downloaded contains some sample pages to get you started. You can import
 these pages in the usual way: from the _Touch Portal_ _Pages_ screen -> _Manage Page..._ button -> _Import Page_ menu item.
-4. After importing the plugin into _Touch Portal_, the `LGKeys.tpp` file you extracted earlier is no longer
+    * After importing the plugin into _Touch Portal_, the `LGKeys.tpp` file you extracted earlier is no longer
 required. If you don't want/need to use the other assets and tools provided in the plugin archive, those can of course
 also be deleted.
 
@@ -104,12 +106,12 @@ profiles would need to be refreshed manually, and profile switch detection is di
 is enabled). On MacOS this also controls how often the folder is scanned for changes.
 
 * `Use LGS Script Integration`: If set to "true", LGKeys will use optional LGS integration which requires some extra
-setup (eee below). Only works on Windows with 64-bit Python. Default is "false"
+setup (see below). Only works on Windows. Default is "false"
 
 * `Report Button Presses`: Requires _LGS Script Integration_ to also be enabled. If "true" then LGKeys will
 send G key and mouse button press and release events to _Touch Portal_ as custom states. Can be used to activate TP
 actions with hardware keys, for example. Requires Windows with 64-bit Python and the optional integration as described
-below.
+below. Default is "false"
 
 The other settings on this page are read-only and only used internally to save plugin state between runs.
 They can be ignored.
@@ -117,7 +119,7 @@ They can be ignored.
 
 ### Optional integration setup (Windows only):
 This optional step provides closer integration with Logitech Gaming Software to allow the following features:
-* Quicker/more accurate profile switching.
+* Quicker/more accurate and efficient game profile switch detection.
 * Detection of current memory slot (M#) on keyboards and G13 keypad.
 * Sending G key/mouse button press events to _Touch Portal_.
 
@@ -137,7 +139,7 @@ from Explorer, but I recommend you use a command prompt).
     The backup will be in a uniquely-named sub-folder of your LGS profiles folder.
     You can also specify a backup folder using the `-b` startup option.<br/>
     Eg. `update_profiles -b C:\temp\LGS_profiles`
-    * The utility will let you know if there is an error or any other problems or warnings.
+    * The utility will let you know if there are any problems or warnings.
     * If it can't find your game profiles in the default location, you can specify one on the command line with
     `-p` option.<br/>
     Eg. `update_profiles -p C:\ProgramData\Logitech\profiles`
@@ -147,7 +149,7 @@ from Explorer, but I recommend you use a command prompt).
 5. Restart the Logitech Gaming Software application (eg. from your Start menu), and _Touch Portal_ or just the plugin
 itself (agin from the TP Settings screen).
 
-For more integration options, especially if you already use Lua scripting in profiles, see the
+For more integration options, especially **if you already use Lua scripting in profiles**, see the
 [LGS Script Integration Options](https://github.com/mpaperno/LGKeys-TouchPortal-Plugin/wiki/LGS-Script-Integration)
 wiki page.
 
@@ -162,7 +164,8 @@ Enter something like this:
 
     M1:EDIT; M2:DIFF; M3:DEBUG;
 
-The syntax is simple: <kbd>M</kbd> followed by the slot number (1-3), then a colon (<kbd>:</kbd>) followed by the name for that memory slot, and ending with a semicolon (<kbd>;</kbd>). If you already have some other description, you could
+The syntax is simple: <kbd>M</kbd> followed by the slot number (1-3), then a colon (<kbd>:</kbd>) followed by the name
+for that memory slot, and ending with a semicolon (<kbd>;</kbd>). If you already have some other description, you could
 add the slot names at the end.
 
 You can then use the `<Device> Memory <N> Name` _States_ (described below) to display the names on your LGKeys page(s).
@@ -170,7 +173,7 @@ You can then use the `<Device> Memory <N> Name` _States_ (described below) to di
 You do not have to provide names for all memory slots. Any that are not specified in the description will
 default to the usual "M1", "M2", or "M3" names.
 
-If you have both a "G" keyboard _and_ a G13 keypad, which have individual memory slots, you can provide names for
+If you have both a "G" keyboard _and_ a G13 keypad, which have separate memory slots, you can provide names for
 the specific devices by using a modified version of the above syntax:
 
     kb.M1:EDIT; kb.M2:DIFF; kb.M3:DEBUG; lhc.M1:C++; lhc.M2:Python; lhc.M3:Lua;
@@ -198,10 +201,11 @@ not (see also `Profile Auto-switch Toggle` action).
 * `Keyboard Memory Slot` - Reflects the current M slot number of a keyboard device. Possible values: "1", "2", or "3".
 See also `Switch Memory Slot` action.
 * `Keyboard Memory <N> Name` - Name of the keyboard memory slot for the current profile, where `<N>` is one of
-"1", "2", or "3".
+"1", "2", or "3". (Also see "Named Memory Slots" section above.)
 * `G13 Memory Slot` - Reflects the current M slot number of a G13 keypad device. Possible values: "1", "2", or "3".
 See also `Switch Memory Slot` action.
 * `G13 Memory <N> Name` - Name of the G13 memory slot for the current profile, where `<N>` is one of "1", "2", or "3".
+ (Also see "Named Memory Slots" section above.)
 * `Status message from the LGKeys Plugin` - Short text messages sent from the plugin, usually to reflect the result
 of some action, such as profile switching.
 
@@ -244,7 +248,7 @@ have directory monitoring disabled, or if for some reason a change wasn't automa
 
 ### Events
 * `Current Profile Changed` - This has limited usefulness for now due to some limitations in the current TP plugin
-system.  This event should fire whenever the `Name of currently active LGS profile` State (see above) changes.
+system.  This event should fire whenever the `Name of currently active LGS profile` _State_ (see above) changes.
 The format is "When profile changes to (name)" and you have to manually type in the exact profile name you're expecting.
 It could be useful for example if you want to load a particular TP page when a specific LGS profile is activated. But the
 built-in "When plug-in state changes" event can be used for the same thing.
