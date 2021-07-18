@@ -33,14 +33,14 @@ __all__ = ['GameProfileParser']
 # XML namespaces used in profile data, map to short versions for ElementTree parsing.
 GK_GP_XMLNS = {
 	'pr': 'http://www.logitech.com/Cassandra/2010.7/Profile',
-	'ks': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/Keystroke',
-	'mk': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/MultiKey',
-	'mf': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/MouseFunction',
-	'tb': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/TextBlock',
-	'hk': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/Hotkeys',
-	'sc': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/Shortcut',
-	'fn': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/Function',
-	'md': 'ttp://www.logitech.com/Cassandra/2010.1/Macros/Media',
+	'ks': 'http://www.logitech.com/Cassandra/2010.1/Macros/Keystroke',
+	'mk': 'http://www.logitech.com/Cassandra/2010.1/Macros/MultiKey',
+	'mf': 'http://www.logitech.com/Cassandra/2010.1/Macros/MouseFunction',
+	'tb': 'http://www.logitech.com/Cassandra/2010.1/Macros/TextBlock',
+	'hk': 'http://www.logitech.com/Cassandra/2010.1/Macros/Hotkeys',
+	'sc': 'http://www.logitech.com/Cassandra/2010.1/Macros/Shortcut',
+	'fn': 'http://www.logitech.com/Cassandra/2010.1/Macros/Function',
+	'md': 'http://www.logitech.com/Cassandra/2010.1/Macros/Media',
 }
 
 @dataclass

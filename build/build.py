@@ -33,10 +33,13 @@ GK_ASSTS = "../assets/"
 sys.path.insert(1, GK_SRC)
 from main import (__version__ as lgk_version, GK_PLUGIN_NAME)
 
-GK_TPP_NAME = "LGKeys.tpp"
-GK_MAIN_NAME = "lgkeys"
+GK_PLUGIN_ROOT = "LGKeys"
+GK_TPP_NAME = GK_PLUGIN_ROOT + ".tpp"
+GK_MAIN_NAME = GK_PLUGIN_ROOT.lower()
 GK_UPDATER_NAME = "update_profiles"
 GK_LISTER_NAME = "list_devices"
+GK_LGSDI_DLL = GK_SRC + "modules/lib/LGS Debug Interceptor.dll"
+GK_LGSDI_DLL_DEST = "./modules/lib"
 GK_INTEGRATION_SCRIPT = GK_TOOLS + "lgkeys-integration.lua"
 GK_ICON_FILE_BASE = GK_SRC + "images/icon-24"
 GK_DIST_FOLDER = GK_PLUGIN_NAME.replace(" ", "-") + "/"
@@ -53,9 +56,9 @@ if sys.platform == "win32":
 	GK_PACKING_LIST[GK_INTEGRATION_SCRIPT] = GK_DIST_TOOLS
 
 GK_TPP_PACK_LIST = {
-	GK_MAIN_NAME + GK_EXE_SFX : "./",
-	GK_SRC + "entry.tp" : "./",
-	GK_SRC + GK_ICON_FILE_BASE + ".png" : "./images/",
+	GK_MAIN_NAME + GK_EXE_SFX : GK_PLUGIN_ROOT + "/",
+	GK_SRC + "entry.tp" : GK_PLUGIN_ROOT + "/",
+	GK_SRC + GK_ICON_FILE_BASE + ".png" : GK_PLUGIN_ROOT + "/images/",
 }
 
 GK_OS_WIN = 1
@@ -91,7 +94,7 @@ def build_main(opsys):
 	]
 	if opsys == GK_OS_WIN:
 		pi_run.append(
-			f'--add-binary={GK_SRC}modules/lib/LGS Debug Interceptor.dll;./modules/lib'
+			f'--add-binary={GK_LGSDI_DLL};{GK_LGSDI_DLL_DEST}'
 		)
 	pi_run.extend(GK_PI_COMMON)
 	PyInstaller.__main__.run(pi_run)
